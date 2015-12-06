@@ -71,7 +71,7 @@ public class YakerWeatherDB {
      * @return
      */
     public List<Province> loadProvinces(){
-        List<Province> provinceList = new ArrayList<>();
+        List<Province> provinceList = new ArrayList<Province>();
         Cursor cursor = db.query("Province",null,null,null,null,null,null);
         if(cursor.moveToFirst()) {
             do{
@@ -106,7 +106,7 @@ public class YakerWeatherDB {
      * @return
      */
     public List<City> loadCities(int provinceId) {
-        List<City> cityList = new ArrayList<>();
+        List<City> cityList = new ArrayList<City>();
         Cursor cursor = db.query("City",null,"province_id=?",new String[]{String.valueOf(provinceId)},null,null,null);
         if(cursor.moveToFirst()){
             do {
@@ -144,7 +144,7 @@ public class YakerWeatherDB {
      * @return
      */
     public List<County> loadCounties(int cityId){
-        List<County> countyList = new ArrayList<>();
+        List<County> countyList = new ArrayList<County>();
         Cursor cursor = db.query("County",null,"city_id=?",new String[]{String.valueOf(cityId)},null,null,null);
 
         if(cursor.moveToFirst()){

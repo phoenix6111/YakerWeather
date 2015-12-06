@@ -2,8 +2,11 @@ package wanghaisheng.com.yakerweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +26,7 @@ import wanghaisheng.com.yakerweather.model.County;
 import wanghaisheng.com.yakerweather.model.Province;
 import wanghaisheng.com.yakerweather.util.HttpCallbackListener;
 import wanghaisheng.com.yakerweather.util.HttpUtil;
+import wanghaisheng.com.yakerweather.util.MyApplication;
 import wanghaisheng.com.yakerweather.util.Utility;
 
 public class ChooseAreaActivity extends Activity {
@@ -39,7 +43,7 @@ public class ChooseAreaActivity extends Activity {
     /**
      * ListView data
      */
-    private List<String> dataList = new ArrayList<>();
+    private List<String> dataList = new ArrayList<String>();
 
     /**
      * 省列表
@@ -72,12 +76,21 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        if(prefs.getBoolean("city_selected",false)) {
+            Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
 
         listView = (ListView) findViewById(R.id.list_view);
         titleView = (TextView) findViewById(R.id.title_text);
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,dataList);
+        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,dataList);
 
         listView.setAdapter(adapter);
 
@@ -92,6 +105,12 @@ public class ChooseAreaActivity extends Activity {
                 } else if(currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if(currentLevel == LEVEL_COUNTY) {
+                    String countyCode = countyList.get(position).getCountyCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+                    intent.putExtra("county_code",countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
